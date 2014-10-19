@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="utf-8" />
+        <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+        <link href="styles/main.css" rel="stylesheet" />
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    </head>
+    <body id="friendsApp">
+        <section data-role="layout" data-id="default">
+            <!--View content will render here-->
+        </section>
+        
+        <!--MAIN VIEW -->
+        <div id="welcome" 
+             data-role="view" 
+             data-model="app.viewModels.main"
+             class="welcome-scrn form-view">
+
+            <ul class="nav nav-tabs" role="tablist">
+              <li><a href="index.html">Home</a></li>
+              <li class="active"><a href="#">Filters</a></li>
+              <li><a href="status.html">Status</a></li>
+            </ul>
+            <!--<h1><b>Telerik BackEnd Services</b> sample application</h1>
+            <p id="messageParagraph">
+                Welcome to the Telerik BackEnd Services push notifications sample hybrid app.<br />
+                <br />
+                Tap on the button below to enable push notifications on the device.
+                messageConnectionType:<div id="messageConnectionType"></div>
+            </p>
+            <p><a id="tokenLink" style="display: none;">send token</a></p>
+            <div>
+                <a id="initializeButton" data-role="button" data-bind="events: { click: enablePushNotifications }" class="btn-big">Enable Notifications</a>
+                <a id="registerButton" style="display: none;" data-role="button" data-bind="events: { click: registerInEverlive }" class="btn-big">Register</a>
+                <a id="updateRegistrationButton" style="display: none;" data-role="button" data-bind="events: { click: updateRegistration }" class="btn-big">Update Registration</a>
+                <a id="unregisterButton" style="display: none;" data-role="button" data-bind="events: { click: disablePushNotifications }" class="btn-big">Disable Notifications</a>
+            </div>
+            <div data-role="footer">
+                <p>Powered by Georgi Keremidchiev.</p>
+            </div>-->
+        </div>
+        
+        <script src="cordova.js"></script>
+        <script src="kendo/js/jquery.min.js"></script>
+        <script src="kendo/js/kendo.mobile.min.js"></script>
+        <script src="scripts/lib/everlive.all.js"></script>
+        <script src="scripts/app/main.js" type="text/javascript"></script>
+    </body>
+</html>

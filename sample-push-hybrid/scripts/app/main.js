@@ -1,11 +1,11 @@
 //This is your Telerik BackEnd Services API key.
-var baasApiKey = 'BAAS_API_KEY';
+var baasApiKey = 'ocfoko9pSfRcDYP5';
 
 //This is the scheme (http or https) to use for accessing Telerik BackEnd Services.
 var baasScheme = 'http';
 
 //This is your Android project number. It is required by Google in order to enable push notifications for your app. You do not need it for iPhone.
-var androidProjectNumber = 'GOOGLE_PROJECT_NUMBER';
+var androidProjectNumber = '716137234214';
 
 //Set this to true in order to test push notifications in the emulator. Note, that you will not be able to actually receive 
 //push notifications because we will generate fake push tokens. But you will be able to test your other push-related functionality without getting errors.
@@ -21,16 +21,125 @@ var app = (function () {
     
     var onDeviceReady = function() {
         if (!baasApiKey || baasApiKey == 'BAAS_API_KEY') {
-            $("#messageParagraph").html("Missing API key!<br /><br />It appears that you have not filled in your Telerik BackEnd Services API key.<br/><br/>Please go to scripts/app/main.js and enter your Telerik BackEnd Services API key at the beginning of the file.");
+            $("#messageParagraph").html("Missing API key!<br /><br />It appears that you have not filled in your Real Estate BackEnd Services API key.<br/><br/>Please go to scripts/app/main.js and enter your Telerik BackEnd Services API key at the beginning of the file.");
             $("#initializeButton").hide();
         } else if ((!androidProjectNumber || androidProjectNumber == 'GOOGLE_PROJECT_NUMBER') && device.platform.toLowerCase() == "android") {
             $("#messageParagraph").html("Missing Android Project Number!<br /><br />It appears that you have not filled in your Android project number. It is required for push notifications on Android.<br/><br/>Please go to scripts/app/main.js and enter your Android project number at the beginning of the file.");
             $("#initializeButton").hide();
         }
         navigator.splashscreen.hide();
-    };
+        var connectionInfo = new ConnectionApp();
+        connectionInfo.run();
+/*        
+        if($("#initializeButton").is(':visible'))
+        {
+            mainViewModel.enablePushNotifications();
+        }
+        
+        if($("#registerButton").is(':visible'))
+        {
+            mainViewModel.registerInEverlive();
+        }
 
-    document.addEventListener("deviceready", onDeviceReady, false);
+        if($("#updateRegistrationButton").is(':visible'))
+        {
+            mainViewModel.updateRegistration();
+        }
+        */
+    };
+    
+    var initLoadData = function ()
+    {
+        $("#content_holder").html("Connecting to server and trying to get new ads...");
+        app.myrender = function(tx, rs)
+        {   
+            var lastMID = 0;
+            
+            if(rs.rows.length > 0)
+            {
+                lastMID = rs.rows.item(0).M_ID;
+            }
+                      
+            $.ajax({
+                url: "http://192.168.197.43:81/im_test_7.pl?command=hello&lastMID=" + lastMID 
+                                + "&hardware_id=" + device.uuid,
+                dataType: "json",
+                async: true,
+                success: function(answer)
+                {
+                    if(answer.status === "ok")
+                    {
+                        for(var i = 0; i < answer.msgs.length; i++)
+                        {
+                            app.addImot(answer.msgs[i].image_url, 
+                                        answer.msgs[i].title,
+                                        answer.msgs[i].page_url,
+                                        answer.msgs[i].image_width,
+                                        answer.msgs[i].image_height,
+                                        answer.msgs[i].m_id
+                                       );
+                        }   
+                        
+                         $("#content_holder").html("Server was checked for new ads.");
+                    }
+                }
+                ,
+                error: function(answer)
+                {  }
+            });
+            
+            app.loadImoti();
+        }
+        
+        app.getMaxMID();
+    }
+    
+    function ConnectionApp() {
+    }
+    
+    ConnectionApp.prototype = {
+        run: function() {
+            if((typeof navigator === "undefined" 
+               && typeof navigator.connection === "undefined" 
+               && typeof navigator.connection.type === "undefined")
+               || navigator.connection.type === 'none')
+              
+            {
+                //$("#internet_connection_holder").hide();
+                //$("#internet_connection_error").show();
+            }
+            else
+            {
+                //$("#internet_connection_holder").show();
+                //$("#internet_connection_error").hide();
+            }
+            
+        //    messageConnectionType = document.getElementById("messageConnectionType");
+        //    messageConnectionType.innerText = navigator.connection.type;
+        }
+    }
+    
+    var hiCommand = function ()
+    {
+        $.ajax({
+                url: "http://192.168.197.43:81/im_test_7.pl?command=hi&hardware_id=" + device.uuid,
+                dataType: "json",
+                async: true,
+                success: function(answer)
+                {
+                    for(var i = 0; i < answer.del_mids.length; i++)
+                    {
+                        app.deleteImot(answer.del_mids[i]);
+                    }
+                }
+        });
+       
+        setTimeout( hiCommand, 2000);
+    }
+
+    document.addEventListener("deviceready", onDeviceReady, false)
+    document.addEventListener("deviceready", initLoadData, false);
+    document.addEventListener("deviceready", hiCommand, false);
 
     //Initialize the Telerik BackEnd Services SDK
     var el = new Everlive({
@@ -49,19 +158,19 @@ var app = (function () {
             $("#initializeButton").hide();
             $("#registerButton").hide();
             $("#unregisterButton").show();
-            $("#messageParagraph").html(successText + "Device is registered in Telerik BackEnd Services and can receive push notifications.");
+            $("#messageParagraph").html(successText + "Device is registered in Real Estate BackEnd Services and can receive push notifications.");
         };
         
         var _onDeviceIsNotRegistered = function() {
             $("#unregisterButton").hide();
             $("#registerButton").show();
-            $("#messageParagraph").html(successText + "Device is not registered in Telerik BackEnd Services. Tap the button below to register it.");
+            $("#messageParagraph").html(successText + "Device is not registered in Real Estate BackEnd Services. Tap the button below to register it.");
         };
         
         var _onDeviceIsNotInitialized = function() {
             $("#unregisterButton").hide();
             $("#initializeButton").show();
-            $("#messageParagraph").html("Device unregistered.<br /><br />Push token was invalidated and device was unregistered from Telerik BackEnd Services. No push notifications will be received.");
+            $("#messageParagraph").html("Device unregistered.<br /><br />Push token was invalidated and device was unregistered from Real Estate BackEnd Services. No push notifications will be received.");
         };
         
         var _onDeviceRegistrationUpdated = function() {
@@ -69,7 +178,11 @@ var app = (function () {
         };
         
         var onAndroidPushReceived = function(args) {
-            alert('Android notification received: ' + JSON.stringify(args)); 
+            //alert('Android notification received: ' + JSON.stringify(args)); 
+
+            $("#content_holder").html("Loading new ads...");
+            $("#content_holder").html("Connecting to server and trying to get new ads...");                         
+            app.getMaxMID();
         };
         
         var onIosPushReceived = function(args) {
@@ -78,6 +191,7 @@ var app = (function () {
         
         //Initializes the device for push notifications.
         var enablePushNotifications = function () {
+             
             //Initialization settings
             var pushSettings = {
                 android: {
@@ -92,30 +206,34 @@ var app = (function () {
                 notificationCallbackIOS: onIosPushReceived
             }
             
-            $("#initializeButton").hide();
+            //$("#initializeButton").hide();
             $("#messageParagraph").text("Initializing push notifications...");
             
             var currentDevice = el.push.currentDevice(emulatorMode);
-            
             currentDevice.enableNotifications(pushSettings)
                 .then(
                     function(initResult) {
+                        $("#initializeButton").hide();
                         $("#tokenLink").attr('href', 'mailto:test@example.com?subject=Push Token&body=' + initResult.token);
                         $("#messageParagraph").html(successText + "Checking registration status...");
                         return currentDevice.getRegistration();
                     },
                     function(err) {
+                        $("#initializeButton").hide();
                         $("#messageParagraph").html("ERROR!<br /><br />An error occured while initializing the device for push notifications.<br/><br/>" + err.message);
                     }
                 ).then(
-                    function(registration) {                        
+                    function(registration) {    
+                        $("#initializeButton").hide();
                         _onDeviceIsRegistered();                      
                     },
                     function(err) {                        
                         if(err.code === 801) {
+                            $("#initializeButton").hide();
                             _onDeviceIsNotRegistered();      
                         }
-                        else {                        
+                        else { 
+                            $("#initializeButton").hide();
                             $("#messageParagraph").html("ERROR!<br /><br />An error occured while checking device registration status: <br/><br/>" + err.message);
                         }
                     }
@@ -124,7 +242,7 @@ var app = (function () {
         
         var registerInEverlive = function() {
             var currentDevice = el.push.currentDevice();
-            
+           
             if (!currentDevice.pushToken) currentDevice.pushToken = "some token";
             el.push.currentDevice()
                 .register({ Age: 15 })
@@ -173,3 +291,5 @@ var app = (function () {
         }
     };
 }());
+
+
